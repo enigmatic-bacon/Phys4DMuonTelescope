@@ -18,7 +18,7 @@ max_velocity = 0.95
 timeOfMeasurement = 10
 
 filename = "results.csv" #Exports data to this file in directory of py script
-chromedriverPath = "D:/Users/bismu/Downloads/ChromeDriver/chromedriver" #Step for this in readme
+chromedriverPath = "C:/Users/[USERNAME]/Downloads/ChromeDriver/chromedriver" #Step for this in readme
 
 run_headless = True #Set to false if you want to see all the tabs being opened
 ##########################################################################
