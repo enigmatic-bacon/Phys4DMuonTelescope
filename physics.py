@@ -31,16 +31,20 @@ options.add_argument('--incognito')
 if run_headless == True:
     options.add_argument('--headless')
 
+#Opens a chrome browser window
 driver = webdriver.Chrome(chromedriverPath, options=options)
 rows = [["Altitude", "Muons at D1", "Muons at D2"]]
+#Find out how many velocity data points we're taking, and at which altitudes
 num_altitude_iterations = round((max_altitude - min_altitude) /altitude_multiples) + 1
 num_velocity_iterations = round((max_velocity - min_velocity) / velocity_multiples) + 1
 
 for velocity_iter in range(num_velocity_iterations):
     for altitude_iter in range(num_altitude_iterations):
+        #Value of the velocity and altitude for the current iteration
         iteration_velocity = velocity_iter * velocity_multiples + min_velocity
         iteration_altitude = altitude_iter * altitude_multiples + min_altitude
 
+        #Open a new tab, print a progress message, sned the values to the appropriate fields in the site, and click the start button
         driver.execute_script("window.open();")
 
         print("Running Test- Velocity: ", iteration_velocity, " Altitude: ", iteration_altitude)
@@ -64,15 +68,17 @@ for window_iter in range(num_altitude_iterations * num_velocity_iterations):
 
     driver.switch_to.window(driver.window_handles[window_iter])
 
+    #Ensure that the applet is done running its simulation
     while(driver.find_element_by_name("duration").get_attribute('value') != str(timeOfMeasurement)):
         time.sleep(1)
 
     print("Done recording data point: ", window_iter + 1, "/", num_altitude_iterations * num_velocity_iterations)
-   
+    #Record the results of the Muons detected 
     rows.append([(window_iter % num_altitude_iterations) * altitude_multiples + min_altitude,
                   driver.find_element_by_name("D1_T").get_attribute('value'),
                   driver.find_element_by_name("D2_T").get_attribute('value')])
 
+#Export all the data to a csv file openable through Excel
 with open(filename, 'w', newline='') as csvfile: 
     csvwriter = csv.writer(csvfile)            
     csvwriter.writerows(rows)
